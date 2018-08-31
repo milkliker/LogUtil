@@ -8,34 +8,59 @@ import org.json.JSONObject;
 
 public class LogUtils {
 
+    private static OnLogInfoListener onLogInfoListener = null;
+
+    public interface OnLogInfoListener {
+        void onLog(String logFrom, String logInfo);
+    }
+
     private static final int JSON_INDENT = 6;
     private static boolean ISDEBUG = true;
 
-    public static void setISDEBUG(boolean ISDEBUG) {
-        LogUtils.ISDEBUG = ISDEBUG;
+    public static void init(boolean isDebug, OnLogInfoListener onLogInfoListener) {
+        LogUtils.ISDEBUG = isDebug;
+        LogUtils.onLogInfoListener = onLogInfoListener;
     }
 
+    /**
+     * 打印日志
+     *
+     * @param content
+     * @param args
+     */
     public static void log(String content, Object... args) {
-        if (ISDEBUG) {
-            StackTraceElement targetStackTraceElement = getTargetStackTraceElement();
-            Log.e("(" + targetStackTraceElement.getFileName() + ":"
-                    + targetStackTraceElement.getLineNumber() + ")", content);
-        }
+        logE(content);
     }
 
 
+    /**
+     * 打印json格式的日志
+     *
+     * @param content
+     * @param args
+     */
     public static void logJson(String content, Object... args) {
-        if (ISDEBUG) {
-            StackTraceElement targetStackTraceElement = getTargetStackTraceElement();
-            Log.e("logJson", "(" + targetStackTraceElement.getFileName() + ":"
-                    + targetStackTraceElement.getLineNumber() + ")");
-            Log.e("logJson", getPrettyJson(content));
-        }
-
-
+        logE(getPrettyJson(content));
     }
 
 
+    private static void logE(String content) {
+        if (ISDEBUG) {
+            Log.e("logFrom", getTargetStackTraceElement());
+            Log.e("logInfo", content);
+        }
+        if (onLogInfoListener != null) {
+            onLogInfoListener.onLog(getTargetStackTraceElement(), content);
+        }
+    }
+
+
+    /**
+     * string转json格式
+     *
+     * @param jsonStr
+     * @return
+     */
     private static String getPrettyJson(String jsonStr) {
         try {
             jsonStr = jsonStr.trim();
@@ -54,7 +79,12 @@ public class LogUtils {
     }
 
 
-    private static StackTraceElement getTargetStackTraceElement() {
+    /**
+     * 获取日志出处
+     *
+     * @return
+     */
+    private static String getTargetStackTraceElement() {
         // find the target invoked method
         StackTraceElement targetStackTrace = null;
         boolean shouldTrace = false;
@@ -67,7 +97,9 @@ public class LogUtils {
             }
             shouldTrace = isLogMethod;
         }
-        return targetStackTrace;
+
+        return "(" + targetStackTrace.getFileName() + ":"
+                + targetStackTrace.getLineNumber() + ")";
     }
 
 
