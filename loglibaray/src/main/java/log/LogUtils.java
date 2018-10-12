@@ -10,6 +10,11 @@ public class LogUtils {
 
     private static OnLogInfoListener onLogInfoListener = null;
 
+
+    private static int LOG_E = 0;
+    private static int LOG_D = 1;
+    private static int LOG_I = 2;
+
     public interface OnLogInfoListener {
         void onLog(String logFrom, String logInfo);
     }
@@ -22,14 +27,24 @@ public class LogUtils {
         LogUtils.onLogInfoListener = onLogInfoListener;
     }
 
+
     /**
      * 打印日志
      *
      * @param content
      * @param args
      */
-    public static void log(String content, Object... args) {
-        logE(content);
+    public static void e(String content, Object... args) {
+        log(content, LOG_E);
+    }
+
+
+    public static void d(String content, Object... args) {
+        log(content, LOG_D);
+    }
+
+    public static void i(String content, Object... args) {
+        log(content, LOG_I);
     }
 
 
@@ -39,15 +54,41 @@ public class LogUtils {
      * @param content
      * @param args
      */
-    public static void logJson(String content, Object... args) {
-        logE(getPrettyJson(content));
+    public static void jsonE(String content, Object... args) {
+        log(getPrettyJson(content), LOG_E);
     }
 
 
-    private static void logE(String content) {
+    public static void jsonD(String content, Object... args) {
+        log(getPrettyJson(content), LOG_D);
+    }
+
+    public static void jsonI(String content, Object... args) {
+        log(getPrettyJson(content), LOG_I);
+    }
+
+
+    private static void log(String content, int type) {
         if (ISDEBUG) {
-            Log.e("logFrom", getTargetStackTraceElement());
-            Log.e("logInfo", content);
+            String logFrom = getTargetStackTraceElement();
+            switch (type) {
+                case 0:
+                    Log.e("logFrom", logFrom);
+                    Log.e("logInfo", content);
+                    break;
+                case 1:
+                    Log.d("logFrom", logFrom);
+                    Log.d("logInfo", content);
+                    break;
+                case 2:
+                    Log.i("logFrom", logFrom);
+                    Log.i("logInfo", content);
+                    break;
+                default:
+                    break;
+            }
+
+
         }
         if (onLogInfoListener != null) {
             onLogInfoListener.onLog(getTargetStackTraceElement(), content);
