@@ -1,10 +1,7 @@
 package com.example.dhht.logutil;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
-
-import com.example.dhht.logutil.app.MyApplication;
+import android.support.v7.app.AppCompatActivity;
 
 import log.LogUtils;
 import toast.ToastUtil;
