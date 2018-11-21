@@ -19,7 +19,6 @@ public class LogUtils {
         void onLog(String logFrom, String logInfo);
     }
 
-    private static final int JSON_INDENT = 6;
     private static boolean ISDEBUG = true;
 
     public static void init(boolean isDebug, OnLogInfoListener onLogInfoListener) {
@@ -55,16 +54,16 @@ public class LogUtils {
      * @param args
      */
     public static void jsonE(String content, Object... args) {
-        log(getPrettyJson(content), LOG_E);
+        log(FormatUtil.formatJson(content), LOG_E);
     }
 
 
     public static void jsonD(String content, Object... args) {
-        log(getPrettyJson(content), LOG_D);
+        log(FormatUtil.formatJson(content), LOG_D);
     }
 
     public static void jsonI(String content, Object... args) {
-        log(getPrettyJson(content), LOG_I);
+        log(FormatUtil.formatJson(content), LOG_I);
     }
 
 
@@ -96,28 +95,6 @@ public class LogUtils {
     }
 
 
-    /**
-     * string转json格式
-     *
-     * @param jsonStr
-     * @return
-     */
-    private static String getPrettyJson(String jsonStr) {
-        try {
-            jsonStr = jsonStr.trim();
-            if (jsonStr.startsWith("{")) {
-                JSONObject jsonObject = new JSONObject(jsonStr);
-                return jsonObject.toString(JSON_INDENT);
-            }
-            if (jsonStr.startsWith("[")) {
-                JSONArray jsonArray = new JSONArray(jsonStr);
-                return jsonArray.toString(JSON_INDENT);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "Invalid Json, Please Check: " + jsonStr;
-    }
 
 
     /**
