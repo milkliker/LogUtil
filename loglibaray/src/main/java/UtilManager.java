@@ -17,5 +17,5 @@ public class UtilManager {
         SharedPreferencesUtil.init(application);
         VibrateUtil.init(application);
     }
-    
+
 }
