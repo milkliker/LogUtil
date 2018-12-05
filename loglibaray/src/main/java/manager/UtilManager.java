@@ -1,3 +1,5 @@
+package manager;
+
 import android.app.Application;
 
 import toast.ToastUtil;
