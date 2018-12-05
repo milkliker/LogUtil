@@ -16,17 +16,6 @@ import com.example.loglibaray.R;
  */
 
 public class SnackbarUtil {
-    public static final int Info = 1;
-    public static final int Confirm = 2;
-    public static final int Warning = 3;
-    public static final int Alert = 4;
-
-
-    public static int red = 0xfff44336;
-    public static int green = 0xff4caf50;
-    public static int blue = 0xff2195f3;
-    public static int orange = 0xffffc107;
-
 
 
     public static void snkbarWait(View view, String msg) {
@@ -34,6 +23,7 @@ public class SnackbarUtil {
         SnackbarUtil.SnackbarAddView(snackbar, R.layout.snackbar_loading, 0);
         snackbar.show();
     }
+
 
     /**
      * 短显示Snackbar，自定义颜色
@@ -80,78 +70,8 @@ public class SnackbarUtil {
         return snackbar;
     }
 
-    /**
-     * 短显示Snackbar，可选预设类型
-     *
-     * @param view
-     * @param message
-     * @param type
-     * @return
-     */
-    public static Snackbar ShortSnackbar(View view, String message, int type) {
-        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
-        switchType(snackbar, type);
-        return snackbar;
-    }
 
-    /**
-     * 长显示Snackbar，可选预设类型
-     *
-     * @param view
-     * @param message
-     * @param type
-     * @return
-     */
-    public static Snackbar LongSnackbar(View view, String message, int type) {
-        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
-        switchType(snackbar, type);
-        return snackbar;
-    }
 
-    /**
-     * 自定义时常显示Snackbar，可选预设类型
-     *
-     * @param view
-     * @param message
-     * @param type
-     * @return
-     */
-    public static Snackbar IndefiniteSnackbar(View view, String message, int duration, int type) {
-        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE).setDuration(duration);
-        switchType(snackbar, type);
-        return snackbar;
-    }
-
-    //选择预设类型
-    private static void switchType(Snackbar snackbar, int type) {
-        switch (type) {
-            case Info:
-                setSnackbarColor(snackbar, blue);
-                break;
-            case Confirm:
-                setSnackbarColor(snackbar, green);
-                break;
-            case Warning:
-                setSnackbarColor(snackbar, orange);
-                break;
-            case Alert:
-                setSnackbarColor(snackbar, Color.YELLOW, red);
-                break;
-        }
-    }
-
-    /**
-     * 设置Snackbar背景颜色
-     *
-     * @param snackbar
-     * @param backgroundColor
-     */
-    public static void setSnackbarColor(Snackbar snackbar, int backgroundColor) {
-        View view = snackbar.getView();
-        if (view != null) {
-            view.setBackgroundColor(backgroundColor);
-        }
-    }
 
     /**
      * 设置Snackbar文字和背景颜色

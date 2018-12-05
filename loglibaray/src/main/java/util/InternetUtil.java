@@ -73,7 +73,7 @@ public class InternetUtil {
     public static boolean isWifi() {
         ConnectivityManager cm = (ConnectivityManager) sApplication
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm != null && cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+        return isOnline() && cm != null && cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
     }
 
 

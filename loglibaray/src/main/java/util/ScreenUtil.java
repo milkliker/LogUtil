@@ -11,6 +11,8 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import log.LogUtils;
+
 /**
  * 作者：Tyhj on 2018/10/14 23:01
  * 邮箱：tyhj5@qq.com
@@ -20,44 +22,17 @@ import android.view.WindowManager;
 
 public class ScreenUtil {
 
-    private static float sNoncompatDensity;
-    private static float sNoncompatScaleDensity;
+    private static Application sApplication;
 
-    public static void setCustomDensity(Activity activity, final Application application) {
-        final DisplayMetrics appDisplayMetrics = application.getResources().getDisplayMetrics();
+    public static int screenWidth = 0;
+    public static int screenHeight = 0;
 
-        if (sNoncompatDensity == 0) {
-            sNoncompatDensity = appDisplayMetrics.density;
-            sNoncompatScaleDensity = appDisplayMetrics.scaledDensity;
-            application.registerComponentCallbacks(new ComponentCallbacks() {
-                @Override
-                public void onConfigurationChanged(Configuration newConfig) {
-                    if (newConfig != null && newConfig.fontScale > 0) {
-                        sNoncompatScaleDensity = application.getResources().getDisplayMetrics().scaledDensity;
-                    }
-                }
-
-                @Override
-                public void onLowMemory() {
-
-                }
-            });
-        }
-
-
-        final float targetDesity = appDisplayMetrics.widthPixels / 360;
-        final int targetDesityDpi = (int) (160 * targetDesity);
-        final float targetScaleDensity = targetDesity * (sNoncompatScaleDensity / sNoncompatDensity);
-
-        appDisplayMetrics.density = targetDesity;
-        appDisplayMetrics.densityDpi = targetDesityDpi;
-        appDisplayMetrics.scaledDensity = targetScaleDensity;
-
-        final DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
-        activityDisplayMetrics.density = targetDesity;
-        activityDisplayMetrics.densityDpi = targetDesityDpi;
-        activityDisplayMetrics.scaledDensity = targetScaleDensity;
-
+    //保存屏幕大小
+    public static void init(Application application) {
+        sApplication = application;
+        DisplayMetrics metrics = sApplication.getResources().getDisplayMetrics();
+        screenWidth = metrics.widthPixels;//获取到的是px，像素，绝对像素，需要转化为dpi
+        screenHeight = getRealHeight();
     }
 
     public static int getStatusBarHeight() {
@@ -67,19 +42,26 @@ public class ScreenUtil {
     }
 
 
-    public static int SCREEN_WIDTH = 0;
-    public static int SCREEN_HEIGHT = 0;
-
-    //保存屏幕大小
-    public static void initScreenSize(Context context) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        SCREEN_WIDTH = metrics.widthPixels;//获取到的是px，像素，绝对像素，需要转化为dpi
-        SCREEN_HEIGHT = getRealHeight(context);
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dip2px(float dpValue) {
+        final float scale = sApplication.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(float pxValue) {
+        final float scale = sApplication.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+
     //获取正确的屏幕高度
-    public static int getRealHeight(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    private static int getRealHeight() {
+        WindowManager wm = (WindowManager) sApplication.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         int screenHeight = 0;
 
@@ -97,23 +79,6 @@ public class ScreenUtil {
             }
         }
         return screenHeight;
-    }
-
-
-    /**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-     */
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
-    /**
-     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
-     */
-    public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (pxValue / scale + 0.5f);
     }
 
 }
